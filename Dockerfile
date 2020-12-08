@@ -40,7 +40,8 @@ RUN apt-get update && apt-get install -y --force-yes \
 	    xterm \
 	    xz-utils \
 	    vim \
-	    zlib1g-dev
+	    zlib1g-dev \
+	    sudo
 
 # Download repo
 RUN curl https://storage.googleapis.com/git-repo-downloads/repo > /bin/repo
@@ -48,6 +49,7 @@ RUN chmod a+x /bin/repo
 
 RUN useradd --create-home --shell /bin/bash optee
 RUN echo 'optee:optee' | chpasswd
+RUN adduser docker sudo
 
 USER optee
 
@@ -58,7 +60,7 @@ RUN git config --global user.email "op-tee@linaro.org"
 RUN mkdir -p /home/optee/qemu-optee
 WORKDIR /home/optee/qemu-optee
 
-RUN /bin/repo init -u https://github.com/OP-TEE/manifest.git
+RUN /bin/repo init -u https://github.com/OP-TEE/manifest.git -m qemu_v8.xml
 RUN /bin/repo sync -j3
 
 WORKDIR /home/optee/qemu-optee/build
